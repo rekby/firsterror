@@ -50,6 +50,13 @@ func (fe *FirstError) Close(force bool, c io.Closer) error {
 	return fe.DoForce(c.Close)
 }
 
+func (fe *FirstError) Copy(dst io.Writer, src io.Reader)(written int64, err error){
+	return fe.Do(func()error{
+		written, err = io.Copy(dst, src)
+		return err
+	})
+}
+
 // Call function with error return.
 // It handle panic and convert it in error.
 // example:

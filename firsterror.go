@@ -51,10 +51,11 @@ func (fe *FirstError) Close(force bool, c io.Closer) error {
 }
 
 func (fe *FirstError) Copy(dst io.Writer, src io.Reader)(written int64, err error){
-	return fe.Do(func()error{
+	err = fe.Do(func()error{
 		written, err = io.Copy(dst, src)
 		return err
 	})
+	return
 }
 
 // Call function with error return.

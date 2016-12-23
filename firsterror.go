@@ -20,6 +20,11 @@ type FirstError struct {
 	Context  context.Context // all methods return error if context error (for fast finish all works). It isn't interrupt method in middle of action while context cancelled.
 }
 
+func New()*FirstError{
+	return &FirstError{
+	}
+}
+
 func (fe *FirstError) Err() error {
 	if fe.err != nil {
 		return fe.err

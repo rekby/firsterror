@@ -29,3 +29,16 @@ type internalWriter struct {
 func (iw internalWriter) Write(buf []byte) (int, error) {
 	return iw.fe.Write(iw.w, buf)
 }
+
+type internalReadWriter struct {
+	fe *FirstError
+	rw io.ReadWriter
+}
+
+func (irw internalReadWriter) Read(buf []byte) (int, error) {
+	return irw.fe.Read(irw.rw, buf)
+}
+
+func (irw internalReadWriter) Write(buf []byte) (int, error) {
+	return irw.fe.Write(irw.rw, buf)
+}

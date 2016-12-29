@@ -20,9 +20,8 @@ type FirstError struct {
 	Context  context.Context // all methods return error if context error (for fast finish all works). It isn't interrupt method in middle of action while context cancelled.
 }
 
-func New()*FirstError{
-	return &FirstError{
-	}
+func New() *FirstError {
+	return &FirstError{}
 }
 
 func (fe *FirstError) Err() error {
@@ -55,8 +54,8 @@ func (fe *FirstError) Close(force bool, c io.Closer) error {
 	return fe.DoForce(c.Close)
 }
 
-func (fe *FirstError) Copy(dst io.Writer, src io.Reader)(written int64, err error){
-	err = fe.Do(func()error{
+func (fe *FirstError) Copy(dst io.Writer, src io.Reader) (written int64, err error) {
+	err = fe.Do(func() error {
 		written, err = io.Copy(dst, src)
 		return err
 	})
@@ -131,6 +130,13 @@ func (fe *FirstError) GetReader(r io.Reader) io.Reader {
 	}
 }
 
+func (fe *FirstError) GetReadWriter(rw io.ReadWriter) io.ReadWriter {
+	return internalReadWriter{
+		fe: fe,
+		rw: rw,
+	}
+}
+
 func (fe *FirstError) GetWriter(w io.Writer) io.Writer {
 	return internalWriter{
 		fe: fe,
@@ -152,7 +158,7 @@ func (fe *FirstError) Reset() {
 }
 
 func (fe *FirstError) Write(w io.Writer, buf []byte) (writeBytes int, err error) {
-	err = fe.Do(func()error {
+	err = fe.Do(func() error {
 		writeBytes, err = w.Write(buf)
 		return err
 	})
